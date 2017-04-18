@@ -5,15 +5,6 @@ import * as Every from "./mini/signal/every";
 import { HtmlNode, div, h1, h6, text } from "./mini/vdom";
 import DomRenderer from "./mini/vdom/renderer";
 
-const root = document.getElementById("app");
-if (!root) {
-  throw new Error("app element not found");
-}
-
-
-const renderer = new DomRenderer(root);
-
-
 interface State {
   currentTime: Date;
   x: number;
@@ -26,7 +17,7 @@ interface Move { kind: "move"; x: number; y: number; }
 
 type Action = NoOp | Tick | Move;
 
-const DEBUG = false;
+const DEBUG = true;
 const initialState = { currentTime: new Date, x: 0, y: 0 };
 
 function update(state: State, action: Action): State {
@@ -51,8 +42,9 @@ function update(state: State, action: Action): State {
   return state;
 }
 
-function render(state: State): HtmlNode {
+function view(state: State): HtmlNode {
   let children;
+
   if (Math.round(state.currentTime.getTime() / 1000) % 2 === 0) {
     children = [
       div(h1(text("e")), h1(text("v"))),
@@ -74,6 +66,11 @@ function render(state: State): HtmlNode {
   );
 }
 
+
+const root = document.getElementById("app");
+if (!root) throw new Error("app element not found");
+
+const renderer = new DomRenderer(root);
 const signal = Signal.merge(
   Signal.once<Action>({ kind: "noop" }),
   Every.Second().map<Action>(t => ({ kind: "tick", date: new Date(t) })),
@@ -82,5 +79,5 @@ const signal = Signal.merge(
 
 signal
   .fold<State>(initialState, update)
-  .map(render)
+  .map(view)
   .subscribe((node) => renderer.render(node));
