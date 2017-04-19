@@ -58,10 +58,10 @@ export interface Renderer<T> {
  * @param deadline How many millis to allow each batch to run for.
  */
 export default class BatchRenderer implements Renderer<Element> {
-  private reads: RenderOp<Element>[] = [];
-  private writes: RenderOp<Element>[] = [];
-  private running = false;
-  private nextFrame: number;
+  protected reads: RenderOp<Element>[] = [];
+  protected writes: RenderOp<Element>[] = [];
+  protected running = false;
+  protected nextFrame: number;
 
   constructor(
     public root: Element,
@@ -104,7 +104,7 @@ export default class BatchRenderer implements Renderer<Element> {
     this.step(undefined, true);
   }
 
-  private step = (timestamp?: number, drain?: boolean): void => {
+  protected step = (timestamp?: number, drain?: boolean): void => {
     if (!this.running) {
       return;
     }

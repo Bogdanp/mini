@@ -1,6 +1,7 @@
 interface HtmlAttributes {
   name?: string;
   value?: any;
+  onclick?: (e: Event) => boolean | void;
 }
 
 export interface HtmlElement {
@@ -60,6 +61,10 @@ export function h5(attrsOrChild: AttrsOrNode, ...children: HtmlNode[]): HtmlElem
 
 export function h6(attrsOrChild: AttrsOrNode, ...children: HtmlNode[]): HtmlElement {
   return node("h6", attrsOrChild, children);
+}
+
+export function button(attrsOrChild: AttrsOrNode, ...children: HtmlNode[]): HtmlElement {
+  return node("button", attrsOrChild, children);
 }
 
 export function isNode(ob: AttrsOrNode): ob is HtmlNode {

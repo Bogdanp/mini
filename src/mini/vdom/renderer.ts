@@ -7,7 +7,7 @@ import diff from "./diff";
 class ReplaceRoot implements RenderOp<Element> {
   kind = "write" as RenderOpKind;
 
-  constructor(private node: Node) { }
+  constructor(protected node: Node) { }
 
   perform(root: Element, timestamp: number): void {
     while (root.lastChild) {
@@ -24,9 +24,9 @@ class Append implements RenderOp<Element> {
   kind = "write" as RenderOpKind;
 
   constructor(
-    private table: Table,
-    private index: number,
-    private node: Node) { }
+    protected table: Table,
+    protected index: number,
+    protected node: Node) { }
 
   perform(root: Element, timestamp: number): void {
     const element = this.table[this.index];
@@ -44,8 +44,8 @@ class Remove implements RenderOp<Element> {
   kind = "write" as RenderOpKind;
 
   constructor(
-    private table: Table,
-    private index: number) { }
+    protected table: Table,
+    protected index: number) { }
 
   perform(root: Element, timestamp: number): void {
     const element = this.table[this.index];
@@ -68,9 +68,9 @@ class Replace implements RenderOp<Element> {
   kind = "write" as RenderOpKind;
 
   constructor(
-    private table: Table,
-    private index: number,
-    private node: Node) { }
+    protected table: Table,
+    protected index: number,
+    protected node: Node) { }
 
   perform(root: Element, timestamp: number): void {
     const element = this.table[this.index];
@@ -94,7 +94,7 @@ class Replace implements RenderOp<Element> {
  * @param root The root Element.
  */
 export default class DomRenderer extends BatchRenderer {
-  private previousNode: HtmlNode;
+  protected previousNode: HtmlNode;
 
   render(node: HtmlNode): void {
     if (!this.previousNode) {
@@ -179,8 +179,12 @@ function indexNodes(root: Element): Table {
  */
 function toDom(node: HtmlNode): Element | Text {
   if (isElement(node)) {
-    // TODO: Attributes
     const el = document.createElement(node.tag);
+
+    for (const key in node.attributes) {
+      (<any>el)[key] = (<any>node).attributes[key];
+    }
+
     for (const child of node.children) {
       el.appendChild(toDom(child));
     }

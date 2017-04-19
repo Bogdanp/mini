@@ -1,4 +1,4 @@
-import Signal from "./";
+import { Signal } from "./";
 
 let _mouseMove: Signal<MouseEvent>;
 
